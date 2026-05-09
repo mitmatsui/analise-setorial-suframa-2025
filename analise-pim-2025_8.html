@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polo Industrial de Manaus — Análise Setorial 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --fundo:#FAF8F3;--papel:#FFF;--tinta:#1A1A1A;--suave:#4A4A4A;
+  --borda:#E5DFD2;--borda2:#C9C0AE;--azul:#1F3864;--ouro:#B5803F;
+  --verde:#4F6B3F;--cinza:#F5F2EA;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--fundo);color:var(--tinta);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+header{border-bottom:1px solid var(--borda);background:var(--papel);padding:18px 48px;}
+.topo{max-width:1520px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+.brand{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--azul);}
+.brand-sub{font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--suave);margin-top:2px;}
+.meta{font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--suave);}
+.hero{max-width:1520px;margin:0 auto;padding:40px 48px 22px;border-bottom:1px solid var(--borda);}
+.kicker{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--ouro);font-weight:600;margin-bottom:10px;}
+h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(26px,3vw,46px);line-height:1.06;letter-spacing:-0.02em;max-width:860px;margin-bottom:10px;}
+h1 em{font-style:italic;color:var(--azul);}
+.lead{font-size:13.5px;color:var(--suave);max-width:680px;line-height:1.65;}
+.kpis{max-width:1520px;margin:0 auto;padding:20px 48px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;border-bottom:1px solid var(--borda);}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--suave);margin-bottom:3px;}
+.kpi-valor{font-family:'Fraunces',serif;font-size:26px;font-weight:500;color:var(--tinta);letter-spacing:-0.02em;line-height:1;}
+.kpi-unit{font-size:11px;color:var(--suave);margin-top:3px;}
+
+/* GRÁFICO */
+.chart-panel{max-width:1520px;margin:0 auto;padding:28px 48px;border-bottom:1px solid var(--borda);}
+.chart-panel-titulo{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--tinta);margin-bottom:2px;}
+.chart-panel-sub{font-size:11px;color:var(--suave);margin-bottom:14px;}
+.grafico-wrap{position:relative;width:100%;height:600px;background:var(--papel);border:1px solid var(--borda);}
+.grafico-centro{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;pointer-events:none;text-align:center;
+  padding:0 36%;
+}
+.c-kicker{font-size:9px;text-transform:uppercase;letter-spacing:0.18em;color:var(--suave);margin-bottom:5px;}
+.c-total{font-family:'Fraunces',serif;font-size:23px;font-weight:500;color:var(--azul);letter-spacing:-0.02em;line-height:1.15;}
+.c-linha{width:26px;height:1px;background:var(--borda2);margin:7px auto;}
+.c-sub{font-size:10px;color:var(--suave);line-height:1.6;}
+
+/* TABELA DE SETORES */
+.setores-wrap{max-width:1520px;margin:0 auto;padding:28px 48px;}
+.setores-titulo{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--tinta);margin-bottom:2px;}
+.setores-sub{font-size:11px;color:var(--suave);margin-bottom:14px;}
+.cabec{display:grid;grid-template-columns:14px minmax(0,1fr) 96px 54px 48px;gap:12px;align-items:center;padding:7px 12px;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--suave);border-bottom:2px solid var(--borda2);}
+.cabec>span:nth-child(n+3){text-align:right;}
+.setores-lista{list-style:none;}
+.setor-item{display:grid;grid-template-columns:14px minmax(0,1fr) 96px 54px 48px;gap:12px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--borda);cursor:pointer;transition:background .12s,padding-left .14s;position:relative;}
+.setor-item:hover{background:var(--cinza);padding-left:16px;}
+.setor-item.ativo{background:#F0EBDD;padding-left:16px;}
+.setor-item.ativo::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--azul);}
+.setor-item.outros-row{opacity:.75;}
+.setor-item.outros-row:hover{opacity:1;}
+.s-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.6);box-shadow:0 0 0 1px rgba(0,0,0,.12);}
+.s-nome{font-size:12px;font-weight:500;color:var(--tinta);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.s-fat{font-size:11.5px;color:var(--tinta);text-align:right;font-variant-numeric:tabular-nums;}
+.s-pct{font-size:11.5px;font-weight:700;color:var(--azul);text-align:right;font-variant-numeric:tabular-nums;}
+.s-emp{font-size:10px;font-weight:600;background:var(--cinza);padding:2px 5px;border-radius:3px;text-align:center;justify-self:end;}
+.s-emp.p{background:#DCEAD4;color:var(--verde);}
+.s-emp.m{background:#F2E6CB;color:var(--ouro);}
+
+/* DETALHE */
+.det-wrap{max-width:1520px;margin:0 auto;padding:0 48px 60px;}
+.det-card{background:var(--papel);border:1px solid var(--borda);padding:28px 36px;display:none;}
+.det-card.vis{display:block;animation:fi .3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.det-header{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;padding-bottom:16px;border-bottom:1px solid var(--borda);margin-bottom:20px;}
+.det-kicker{font-size:10px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ouro);font-weight:600;margin-bottom:4px;}
+.det-titulo{font-family:'Fraunces',serif;font-size:26px;font-weight:500;letter-spacing:-0.02em;color:var(--tinta);}
+.det-stats{display:flex;gap:20px;flex-shrink:0;}
+.det-stat{text-align:right;}
+.det-stat-label{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--suave);margin-bottom:3px;}
+.det-stat-valor{font-family:'Fraunces',serif;font-size:19px;font-weight:500;color:var(--tinta);}
+.det-stat-valor.azul{color:var(--azul);}
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:13px;}
+.toolbar input{flex:1;padding:9px 12px;background:var(--cinza);border:1px solid var(--borda);font-family:inherit;font-size:13px;color:var(--tinta);}
+.toolbar input:focus{outline:none;border-color:var(--azul);}
+.contador{font-size:11px;color:var(--suave);white-space:nowrap;}
+.emp-row{border-bottom:1px solid var(--borda);padding:10px 0;}
+.emp-head{display:grid;grid-template-columns:26px 106px 1fr 66px 20px;gap:12px;align-items:center;cursor:pointer;}
+.emp-head:hover .emp-nome{color:var(--azul);}
+.emp-rank{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--suave);}
+.emp-insc{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--suave);}
+.emp-nome{font-size:13px;font-weight:500;color:var(--tinta);transition:color .15s;}
+.emp-qtd{text-align:right;font-size:11px;font-weight:600;background:var(--cinza);padding:3px 8px;display:inline-block;justify-self:end;}
+.emp-toggle{font-size:13px;color:var(--suave);transition:transform .2s;}
+.emp-row.open .emp-toggle{transform:rotate(90deg);}
+.prod-list{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.emp-row.open .prod-list{max-height:2000px;}
+.prod-inner{padding:12px 0 6px 50px;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:4px 20px;}
+.prod-item{font-size:11px;color:var(--suave);padding:2px 0 2px 10px;border-left:2px solid var(--borda);}
+.prod-cod{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--azul);margin-right:4px;}
+footer{border-top:1px solid var(--borda);background:var(--papel);padding:20px 48px;}
+.rodape{max-width:1520px;margin:0 auto;font-size:11px;color:var(--suave);line-height:1.7;}
+.rodape strong{font-family:'Fraunces',serif;font-size:13px;color:var(--tinta);display:block;margin-bottom:3px;}
+@media(max-width:900px){header,.hero,.kpis,.chart-panel,.setores-wrap,.det-wrap,footer{padding-left:20px;padding-right:20px;}.kpis{grid-template-columns:repeat(2,1fr);}h1{font-size:24px;}.grafico-wrap{height:480px;}.det-header{flex-direction:column;}.det-stats{flex-direction:column;gap:10px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="topo">
+    <div><div class="brand">Elaborado por:</div><div class="brand-sub">Mitsuo Matsui</div></div>
+    <div class="meta">Análise Setorial PIM &nbsp;·&nbsp; Maio de 2026</div>
+  </div>
+</header>
+<div class="hero">
+  <div class="kicker">Polo Industrial de Manaus — exercício de 2025</div>
+  <h1>Mapeamento setorial cruzando <em>faturamento oficial</em> e <em>empresas com PPB</em> acompanhadas pela SUFRAMA.</h1>
+  <p class="lead">7 maiores subsetores destacados individualmente no gráfico. Os 17 restantes agrupados como "Outros". Clique em qualquer setor para ver as empresas com PPB e seus produtos.</p>
+</div>
+<div class="kpis">
+  <div><div class="kpi-label">Faturamento Total</div><div class="kpi-valor" id="kpi-fat">—</div><div class="kpi-unit">R$ bilhões em 2025</div></div>
+  <div><div class="kpi-label">Empresas com PPB</div><div class="kpi-valor" id="kpi-emp">—</div><div class="kpi-unit">inscrições SUFRAMA únicas</div></div>
+  <div><div class="kpi-label">Subsetores</div><div class="kpi-valor" id="kpi-sub">—</div><div class="kpi-unit">classificações SUFRAMA</div></div>
+</div>
+<div class="chart-panel">
+  <div class="chart-panel-titulo">Composição do faturamento 2025</div>
+  <div class="chart-panel-sub">Labels diretamente no gráfico · linhas próximas a cada setor · clique para detalhar</div>
+  <div class="grafico-wrap">
+    <canvas id="grafico"></canvas>
+    <div class="grafico-centro">
+      <div class="c-kicker">PIM 2025 — Total</div>
+      <div class="c-total">R$ 229,02 bi</div>
+      <div class="c-linha"></div>
+      <div class="c-sub">645 empresas com PPB<br>24 subsetores</div>
+    </div>
+  </div>
+</div>
+<div class="setores-wrap">
+  <div class="setores-titulo">24 subsetores rankeados</div>
+  <div class="setores-sub">Clique para ver as empresas com PPB e produtos fabricados</div>
+  <div class="cabec"><span></span><span>Subsetor</span><span style="text-align:right">R$ milhões</span><span style="text-align:right">Part.</span><span style="text-align:right">Emp.</span></div>
+  <ul class="setores-lista" id="lista"></ul>
+</div>
+<div class="det-wrap">
+  <div class="det-card" id="detalhe">
+    <div class="det-header">
+      <div><div class="det-kicker">Detalhamento setorial</div><div class="det-titulo" id="det-nome">—</div></div>
+      <div class="det-stats">
+        <div class="det-stat"><div class="det-stat-label">Faturamento 2025</div><div class="det-stat-valor" id="det-fat">—</div></div>
+        <div class="det-stat"><div class="det-stat-label">Participação</div><div class="det-stat-valor azul" id="det-pct">—</div></div>
+        <div class="det-stat"><div class="det-stat-label">Empresas com PPB</div><div class="det-stat-valor" id="det-emp">—</div></div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input type="text" id="busca" placeholder="Buscar empresa por nome ou inscrição SUFRAMA…">
+      <span class="contador" id="contador">—</span>
+    </div>
+    <div id="emp-container"></div>
+  </div>
+</div>
+<footer><div class="rodape"><strong>Fontes oficiais</strong>Superintendência da Zona Franca de Manaus (SUFRAMA) — exercício de 2025.</div></footer>
+<script>
+
+const DADOS = {"total_pim":{"faturamento":229021509217.0,"qtd_empresas_unicas":645,"qtd_subsetores":24},"subsetores":[
+{"nome":"Bens de informática","faturamento":47925604121.0,"participacao":20.93,"qtd_empresas":40,"empresas":[{"inscricao":"200105663","razao":"FLEX IMPORTAÇÃO EXPORTAÇÃO IND","qtd_produtos":4,"produtos":["0057 - ROTEADOR DIGITAL","0335 - TERMINAL DE CAPTURA DE DADOS","1301 - MODULADOR/DEMODULADOR (RÁDIO MODEM)","1310 - MODULADOR/DEMODULADOR PARA COMUNICAÇÃO DE DADOS VIA TELEVISÃO A CABO"]},{"inscricao":"200131869","razao":"SALCOMP INDUSTRIAL ELETRONICA","qtd_produtos":4,"produtos":["0335 - TERMINAL DE CAPTURA DE DADOS","1847 - CONVERSOR CA/CC PARA NOTEBOOK","2028 - CONVERSOR CA/CC PARA TABLET PC (BASEADO EM TÉCNICA DIGITAL)","2029 - CONVERSOR CA/CC PARA TABLET PC (NÃO BASEADO EM TÉCNICA DIGITAL)"]},{"inscricao":"200132148","razao":"POSITIVO TECNOLOGIA S.A","qtd_produtos":4,"produtos":["0307 - MICROCOMPUTADOR PORTÁTIL","0335 - TERMINAL DE CAPTURA DE DADOS","1987 - MICROCOMPUTADOR PORTÁTIL SEM TECLADO FÍSICO - TABLET PC","2077 - UNIDADE DIGITAL DE PROCESSAMENTO TIPO SERVIDOR"]},{"inscricao":"200142410","razao":"LG ELECTRONICS DO BRASIL LTDA","qtd_produtos":4,"produtos":["0307 - MICROCOMPUTADOR PORTÁTIL","0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO","1160 - UNIDADE DIGITAL DE PROCESSAMENTO DE PEQUENO PORTE COM MONITOR DE VÍDEO","2303 - MONITOR DE VÍDEO COM TELA OLED"]},{"inscricao":"200168339","razao":"SAMSUNG ELETRONICA DA AMAZONIA LTDA","qtd_produtos":4,"produtos":["0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO","1987 - MICROCOMPUTADOR PORTÁTIL SEM TECLADO FÍSICO - TABLET PC","2217 - SMARTWATCH","2303 - MONITOR DE VÍDEO COM TELA OLED"]},{"inscricao":"200104640","razao":"PROCOMP AMAZONIA INDUSTRIA","qtd_produtos":3,"produtos":["0315 - TECLADO (USO EM INFORMÁTICA)","0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO","1859 - IMPRESSORA TÉRMICA"]},{"inscricao":"200129856","razao":"TEC TOY S/A","qtd_produtos":3,"produtos":["0057 - ROTEADOR DIGITAL","0335 - TERMINAL DE CAPTURA DE DADOS","2298 - TECLADO COM LEITOR DE CARTÃO DE DÉBITO E CRÉDITO (PIN PAD)"]},{"inscricao":"200100777","razao":"INVENTUS POWER ELETRONICA DO BRASIL LTDA","qtd_produtos":2,"produtos":["1847 - CONVERSOR CA/CC PARA NOTEBOOK","2028 - CONVERSOR CA/CC PARA TABLET PC"]},{"inscricao":"200109723","razao":"CIS ELETRONICA DA AMAZONIA S.A","qtd_produtos":2,"produtos":["0307 - MICROCOMPUTADOR PORTÁTIL","1987 - MICROCOMPUTADOR PORTÁTIL SEM TECLADO FÍSICO - TABLET PC"]},{"inscricao":"200111647","razao":"FOXCONN MOEBG INDUSTRIA DE ELETRONICOS LTDA","qtd_produtos":2,"produtos":["0057 - ROTEADOR DIGITAL","2077 - UNIDADE DIGITAL DE PROCESSAMENTO TIPO SERVIDOR"]},{"inscricao":"200120832","razao":"PHILCO ELETRONICOS SA","qtd_produtos":2,"produtos":["0307 - MICROCOMPUTADOR PORTÁTIL","0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO"]},{"inscricao":"200100793","razao":"HUMAX DO BRASIL INDUSTRIA ELETRONICA LTDA","qtd_produtos":1,"produtos":["1310 - MODULADOR/DEMODULADOR PARA COMUNICAÇÃO DE DADOS VIA TELEVISÃO A CABO"]},{"inscricao":"200103946","razao":"IITA INDUSTRIA DE IMPRESSORAS TECNOLÓGICAS DA AMAZÔNIA LTDA","qtd_produtos":1,"produtos":["0312 - IMPRESSORA DE TRANSFERÊNCIA TÉRMICA"]},{"inscricao":"200104080","razao":"ARRIS INDUSTRIA ELETRONICA DO BRASIL LTDA","qtd_produtos":1,"produtos":["1310 - MODULADOR/DEMODULADOR PARA COMUNICAÇÃO DE DADOS VIA TELEVISÃO A CABO"]},{"inscricao":"200104268","razao":"KAON DO BRASIL INDUSTRIA ELETRONICA LTDA","qtd_produtos":1,"produtos":["1310 - MODULADOR/DEMODULADOR PARA COMUNICAÇÃO DE DADOS VIA TELEVISÃO A CABO"]},{"inscricao":"200108760","razao":"TROPICO SISTEMAS E TELECOMUNICACOES DA AMAZONIA LTDA","qtd_produtos":1,"produtos":["0057 - ROTEADOR DIGITAL"]},{"inscricao":"200115995","razao":"MK BR S.A","qtd_produtos":1,"produtos":["0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO"]},{"inscricao":"200118587","razao":"GERTEC BRASIL LTDA","qtd_produtos":1,"produtos":["0335 - TERMINAL DE CAPTURA DE DADOS"]},{"inscricao":"200120883","razao":"BRITÂNIA COMPONENTES ELETRÔNICOS LTDA","qtd_produtos":1,"produtos":["1847 - CONVERSOR CA/CC PARA NOTEBOOK"]},{"inscricao":"200121324","razao":"VANTIVA TECHNOLOGIES BRASIL LTDA","qtd_produtos":1,"produtos":["1310 - MODULADOR/DEMODULADOR PARA COMUNICAÇÃO DE DADOS VIA TELEVISÃO A CABO"]},{"inscricao":"200125443","razao":"GBR COMPONENTES DA AMAZONIA LTDA","qtd_produtos":1,"produtos":["1987 - MICROCOMPUTADOR PORTÁTIL SEM TECLADO FÍSICO - TABLET PC"]},{"inscricao":"200129473","razao":"ENVISION INDUSTRIA DE PRODUTOS ELETRONICOS LTDA","qtd_produtos":1,"produtos":["0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO"]},{"inscricao":"200136267","razao":"ELSYS EQUIPAMENTOS ELETRONICOS LTDA","qtd_produtos":1,"produtos":["0057 - ROTEADOR DIGITAL"]},{"inscricao":"200152530","razao":"SAGEMCOM BRASIL COMUNICAÇÕES","qtd_produtos":1,"produtos":["1310 - MODULADOR/DEMODULADOR PARA COMUNICAÇÃO DE DADOS VIA TELEVISÃO A CABO"]},{"inscricao":"200161229","razao":"CONSTANTA DA AMAZONIA LTDA","qtd_produtos":1,"produtos":["0335 - TERMINAL DE CAPTURA DE DADOS"]},{"inscricao":"200163272","razao":"JABIL INDUSTRIAL DO BRASIL LTDA","qtd_produtos":1,"produtos":["0315 - TECLADO (USO EM INFORMÁTICA)"]},{"inscricao":"200178784","razao":"BEST NOTEBOOKS INDÚSTRIA E COMÉRCIO DE EQUIPAMENTOS DE INFORMÁTICA","qtd_produtos":1,"produtos":["0307 - MICROCOMPUTADOR PORTÁTIL"]},{"inscricao":"200188208","razao":"SONG INDUSTRIA E COMERCIO DE ELETRONICOS LTDA","qtd_produtos":1,"produtos":["2066 - UNIDADE DE ARMAZENAMENTO NÃO VOLÁTIL EM MEIO SEMICONDUTOR (SSD)"]},{"inscricao":"210104490","razao":"BOARDTEC DO BRASIL LTDA","qtd_produtos":1,"produtos":["2066 - UNIDADE DE ARMAZENAMENTO NÃO VOLÁTIL EM MEIO SEMICONDUTOR (SSD)"]},{"inscricao":"210124296","razao":"ZILIA TECHNOLOGIES INDUSTRIA E COMERCIO DE COMPONENTES ELETRONICOS","qtd_produtos":1,"produtos":["2066 - UNIDADE DE ARMAZENAMENTO NÃO VOLÁTIL EM MEIO SEMICONDUTOR (SSD)"]},{"inscricao":"210130938","razao":"ADATA ELECTRONICS BRAZIL S/A","qtd_produtos":1,"produtos":["2066 - UNIDADE DE ARMAZENAMENTO NÃO VOLÁTIL EM MEIO SEMICONDUTOR (SSD)"]},{"inscricao":"210132078","razao":"INVENTUS POWER ELETRONICA DO AMAZONAS","qtd_produtos":1,"produtos":["0057 - ROTEADOR DIGITAL"]},{"inscricao":"210141085","razao":"HANA ELETRONICS INDUSTRIA E COMERCIO LTDA","qtd_produtos":1,"produtos":["2066 - UNIDADE DE ARMAZENAMENTO NÃO VOLÁTIL EM MEIO SEMICONDUTOR (SSD)"]},{"inscricao":"210164077","razao":"ACC BRASIL INDUSTRIA E COMERCIO DE COMPUTADORES LTDA","qtd_produtos":1,"produtos":["2077 - UNIDADE DIGITAL DE PROCESSAMENTO TIPO SERVIDOR"]},{"inscricao":"210170743","razao":"FLEXTRONICS INTERNATIONAL TECNOLOGIA LTDA","qtd_produtos":1,"produtos":["1987 - MICROCOMPUTADOR PORTÁTIL SEM TECLADO FÍSICO - TABLET PC"]},{"inscricao":"220147450","razao":"GRUPO MULTI S.A","qtd_produtos":1,"produtos":["2066 - UNIDADE DE ARMAZENAMENTO NÃO VOLÁTIL EM MEIO SEMICONDUTOR (SSD)"]},{"inscricao":"210111100","razao":"LUXPAY INOVACAO TECNOLOGIA E FABRICACAO DE PRODUTOS ELETRONICOS","qtd_produtos":2,"produtos":["0335 - TERMINAL DE CAPTURA DE DADOS","1987 - MICROCOMPUTADOR PORTÁTIL SEM TECLADO FÍSICO - TABLET PC"]},{"inscricao":"200115375","razao":"IMPORTADORA EXPORTADORA E INDUSTRIA JIMMY EIRELI","qtd_produtos":1,"produtos":["2217 - SMARTWATCH"]},{"inscricao":"200111752","razao":"VENTTOS INDUSTRIA E COMERCIO DE EQUIPAMENTOS ELETRONICOS","qtd_produtos":1,"produtos":["1859 - IMPRESSORA TÉRMICA"]},{"inscricao":"200108760","razao":"TROPICO SISTEMAS E TELECOMUNICACOES","qtd_produtos":1,"produtos":["0057 - ROTEADOR DIGITAL"]}]},
+{"nome":"Duas rodas","faturamento":44830230337.0,"participacao":19.57,"qtd_empresas":43,"empresas":[{"inscricao":"200106015","razao":"HONDA COMPONENTES DA AMAZONIA LTDA","qtd_produtos":12,"produtos":["0417 - LAMINADO DE FERRO AÇO EM FITA, TIRA, CHAPA E BLANKS","0830 - FILTRO DE AR PARA VEÍCULO DE DUAS RODAS","1487 - PARTES E PEÇAS USINADAS PARA MOTOCICLETAS","1497 - PARTES E PEÇAS COM TRATAMENTO DE SUPERFÍCIE","1500 - PARTES E PEÇAS SOLDADAS PARA MOTOCICLETAS","1533 - PARTES E PEÇAS ESTAMPADAS PARA MOTOCICLETAS","1581 - PARTES E PEÇAS PINTADAS PARA MOTOCICLETAS","1600 - RODA RAIADA PARA MOTOCICLETAS","1601 - RODA DE LIGA LEVE PARA MOTOCICLETAS","1605 - SUBCONJUNTO PEDAL DE APOIO PARA MOTOCICLETAS","1746 - ARTEFATOS TUBULARES DE FERRO/AÇO","1970 - CONJUNTO ESCAPAMENTO COMPLETO PARA MOTOCICLETAS"]},{"inscricao":"200106023","razao":"MOTO HONDA DA AMAZÔNIA LTDA","qtd_produtos":6,"produtos":["0002 - MOTOCICLETA ACIMA DE 100 CM3 ATÉ 450 CM3","0003 - MOTOCICLETA ACIMA DE 450 CM3","0007 - MOTONETA ACIMA DE 100 CM3 ATÉ 450 CM3","0550 - MOTOR ESTACIONÁRIO","0735 - QUADRICICLO ACIMA DE 100 CM3","2213 - MOTOBOMBA HIDRÁULICA CENTRÍFUGA DE ROTOR"]},{"inscricao":"200114603","razao":"YAMAHA MOTOR DA AMAZONIA LTDA","qtd_produtos":10,"produtos":["0002 - MOTOCICLETA ACIMA DE 100 CM3 ATÉ 450 CM3","0003 - MOTOCICLETA ACIMA DE 450 CM3","0007 - MOTONETA ACIMA DE 100 CM3 ATÉ 450 CM3","0277 - MOTOR DE POPA","1500 - PARTES E PEÇAS SOLDADAS PARA MOTOCICLETAS","1533 - PARTES E PEÇAS ESTAMPADAS PARA MOTOCICLETAS","1581 - PARTES E PEÇAS PINTADAS","1605 - SUBCONJUNTO PEDAL DE APOIO","1999 - CICLOMOTOR ELÉTRICO","2027 - CHASSI DE AÇO PARA MOTOCICLETAS"]},{"inscricao":"200174428","razao":"DBS INDUSTRIA DO AMAZONAS S/A","qtd_produtos":9,"produtos":["0003 - MOTOCICLETA ACIMA DE 450 CM3","0007 - MOTONETA ACIMA DE 100 CM3 ATÉ 450 CM3","0224 - BRINQUEDO MECÂNICO","0225 - BRINQUEDO ELETROMECÂNICO","1704 - MOTONETA ELÉTRICA","1854 - DISPOSITIVO DE LOCOMOÇÃO INDIVIDUAL ELÉTRICO","1998 - MOTOCICLETA ELÉTRICA","2000 - BICICLETA ELÉTRICA","2211 - PATINETE ELÉTRICO"]},{"inscricao":"200116797","razao":"BMW MANUFACTURING INDUSTRIA DE MOTOS DA AMAZONIA LTDA","qtd_produtos":3,"produtos":["0002 - MOTOCICLETA ACIMA DE 100 CM3 ATÉ 450 CM3","0003 - MOTOCICLETA ACIMA DE 450 CM3","0007 - MOTONETA ACIMA DE 100 CM3 ATÉ 450 CM3"]},{"inscricao":"200154559","razao":"HARLEY-DAVIDSON DO BRASIL LTDA","qtd_produtos":4,"produtos":["0003 - MOTOCICLETA ACIMA DE 450 CM3","0820 - BOMBA DE ÓLEO PARA VEÍCULO DE DUAS RODAS","1544 - CONJUNTO PÁRA-LAMA TRASEIRO","1605 - SUBCONJUNTO PEDAL DE APOIO"]},{"inscricao":"200100408","razao":"CALOI NORTE S/A","qtd_produtos":3,"produtos":["0139 - BICICLETA COM CÂMBIO","0140 - BICICLETA SEM CÂMBIO","2000 - BICICLETA ELÉTRICA"]},{"inscricao":"200107461","razao":"BIKE NORTE FABRICAÇÃO DE BICICLETAS S/A","qtd_produtos":3,"produtos":["0139 - BICICLETA COM CÂMBIO","0140 - BICICLETA SEM CÂMBIO","2000 - BICICLETA ELÉTRICA"]},{"inscricao":"200143131","razao":"KAWASAKI MOTORES DO BRASIL LTDA","qtd_produtos":2,"produtos":["0002 - MOTOCICLETA ACIMA DE 100 CM3 ATÉ 450 CM3","0003 - MOTOCICLETA ACIMA DE 450 CM3"]}]},
+{"nome":"Eletroeletrônico","faturamento":38667321591.0,"participacao":16.88,"qtd_empresas":109,"empresas":[{"inscricao":"200142410","razao":"LG ELECTRONICS DO BRASIL LTDA","qtd_produtos":20,"produtos":["0045 - FORNO DE MICROONDAS","0285 - CONDICIONADOR DE AR COM MAIS DE UM CORPO","0724 - AMPLIFICADOR DE ÁUDIO EM 3D - HOME THEATER","0769 - PROJETOR DE VÍDEO","1248 - TELEVISOR EM CORES COM TELA DE CRISTAL LÍQUIDO","1369 - UNIDADE EVAPORADORA PARA CONDICIONADOR DE AR SPLIT","1370 - UNIDADE CONDENSADORA PARA CONDICIONADOR DE AR SPLIT","1856 - DVD PLAYER BLU RAY","1931 - DISPOSITIVO DE CRISTAL LÍQUIDO PARA TELEVISORES","2033 - TELEVISOR EM CORES COM TELA OLED","2106 - CAIXA ACÚSTICA PARA REPRODUÇÃO DE ÁUDIO VIA CONEXÃO SEM FIO","2149 - MÓDULO RECEPTOR DE RÁDIO AM/FM PARA VEÍCULO","0106 - RÁDIO COM TOCA-DISCOS DIGITAL A LASER","0931 - SUBCONJUNTO CHASSI MONTADO PARA APARELHO DE ÁUDIO OU VÍDEO","0932 - SUBCONJUNTO PAINEL FRONTAL PARA APARELHO DE ÁUDIO OU VÍDEO","1270 - RÁDIO COM REPRODUTOR DE CD/DVD COM HOME THEATER","1916 - RÁDIO COM REPRODUTOR DE DVD BLU-RAY COM HOME THEATER","1941 - RÁDIO COM REPRODUTOR DE ÁUDIO NO FORMATO DIGITAL","1947 - SUBCONJUNTO PAINEL DE CONTROLE PARA APARELHOS DE ÁUDIO OU VÍDEO","2163 - APARELHO RECEPTOR DE TELEVISÃO COM PROJETOR DE VÍDEO"]},{"inscricao":"200168339","razao":"SAMSUNG ELETRONICA DA AMAZONIA LTDA","qtd_produtos":11,"produtos":["0089 - TELEFONE CELULAR DIGITAL","0285 - CONDICIONADOR DE AR COM MAIS DE UM CORPO","0724 - HOME THEATER","0769 - PROJETOR DE VÍDEO","1248 - TELEVISOR EM CORES COM TELA DE CRISTAL LÍQUIDO","1369 - UNIDADE EVAPORADORA SPLIT","1370 - UNIDADE CONDENSADORA SPLIT","1931 - DISPOSITIVO DE CRISTAL LÍQUIDO PARA TELEVISORES","2033 - TELEVISOR EM CORES COM TELA OLED","2222 - FONES DE OUVIDO SEM FIO COM SISTEMA INTELIGENTE DE ÁUDIO","1297 - TELEVISOR COM TELA DE PLASMA"]},{"inscricao":"200149172","razao":"PST ELETRONICA LTDA","qtd_produtos":10,"produtos":["0099 - AUTORRÁDIO","0115 - PLACA DE CIRCUITO IMPRESSO MONTADA","0120 - ALARME ELETRÔNICO PARA VEÍCULO","0121 - MÓDULO DE CONTROLE PARA ALARME","0361 - PLACA DE CIRCUITO IMPRESSO MONTADA (USO EM INFORMÁTICA)","0693 - MÓDULO DE CONTROLE DA TRAVA ELÉTRICA","0989 - CONTROLE REMOTO PARA ALARME ELETRÔNICO","1565 - TACÓGRAFO ELETRÔNICO","1712 - AUTORRÁDIO COM DVD PLAYER","1945 - PAINEL DE INSTRUMENTOS PARA VEÍCULOS DIGITAIS"]}]},
+{"nome":"Químico","faturamento":23743477869.0,"participacao":10.37,"qtd_empresas":45,"empresas":[{"inscricao":"200166190","razao":"COIMPA INDUSTRIAL LTDA","qtd_produtos":13,"produtos":["0411 - PÓ DE PRATA","0608 - AUROCIANETO DE POTÁSSIO","0615 - CLORETO DE PALÁDIO","0621 - ÂNODO DE PRATA PURA","0880 - OURO E SUAS LIGAS EM FIOS E LÂMINAS","0892 - CLORETO DE RÓDIO","0894 - PRODUTO QUÍMICO PARA GALVANOPLASTIA","0958 - PRATA E SUAS LIGAS EM BARRAS E CHAPAS","0959 - PLATINA E SUAS LIGAS EM FIOS E LÂMINAS","0960 - PALÁDIO E SUAS LIGAS EM FIOS E LÂMINAS","1731 - PASTILHA DE PRATA","1946 - ÁCIDO HEXACLOROPLATÍNICO","2097 - PRATA EM CRISTAIS"]},{"inscricao":"200109405","razao":"CERAS JOHNSON LTDA","qtd_produtos":11,"produtos":["0482 - DETERGENTE","0487 - DESINFETANTE","0489 - CERA","1740 - ODORIZADOR DE AMBIENTE","1741 - ODORIZADOR DE AMBIENTE EMBALADO SOB PRESSÃO","1743 - REPELENTE EM FORMA DE PASTILHAS","1744 - REPELENTE PARA USO TÓPICO EMBALADO SOB PRESSÃO","1745 - REPELENTE PARA USO TÓPICO EM FORMA DE LOÇÃO","1845 - REPELENTE LÍQUIDO PARA APARELHO DISPERSOR ELÉTRICO","1877 - REPELENTE EM PASTILHAS IMPREGNADAS EM SACHÊ","2273 - INSETICIDA"]},{"inscricao":"200130820","razao":"AMAZON ERVAS - LABORATORIO BOTANICO LTDA","qtd_produtos":9,"produtos":["0560 - PREPARAÇÕES PARA CABELO","0561 - CONDICIONADOR DE CABELOS","0563 - SABONETE","0798 - MEL NATURAL","0901 - ÓLEO ESSENCIAL","1003 - GUARANÁ EM PÓ","1050 - ENCAPSULADO DE PLANTAS NÃO REGIONAIS","1059 - ÓLEO ESSENCIAL DE COPAÍBA","1302 - GEL PARA FINS TERAPÊUTICOS OU PROFILÁTICOS"]}]},
+{"nome":"Mecânico","faturamento":20674235413.0,"participacao":9.03,"qtd_empresas":20,"empresas":[{"inscricao":"200159240","razao":"ASTEMO MANAUS POWERTRAIN SYSTEMS LTDA","qtd_produtos":9,"produtos":["1214 - CARBURADOR PARA MOTORES À EXPLOSÃO","1251 - PARTES E PEÇAS FUNDIDAS PARA MOTOCICLETAS","1658 - VÁLVULA DE SUCÇÃO DE AR DO MOTOR","1669 - CORPO DA VÁLVULA MAGNÉTICA DE CONTROLE HIDRÁULICO","1843 - BOMBA DE COMBUSTÍVEL PARA MOTOCICLETAS","1855 - REGULADOR DE PRESSÃO DO COMBUSTÍVEL","2137 - CONJUNTO CORPO DE ACELERAÇÃO PARA INJEÇÃO ELETRÔNICA","2138 - CONJUNTO TUBO DE ALIMENTAÇÃO PARA INJEÇÃO ELETRÔNICA","2139 - CONJUNTO INJETOR DE COMBUSTÍVEL"]},{"inscricao":"200116134","razao":"CLIMAZON INDUSTRIAL LTDA","qtd_produtos":6,"produtos":["0045 - FORNO DE MICROONDAS","0282 - CONDICIONADOR DE AR DE CORPO ÚNICO","0285 - CONDICIONADOR DE AR COM MAIS DE UM CORPO","1353 - TROCADOR DE CALOR TIPO TUBO ALETADO (SERPENTINA)","1369 - UNIDADE EVAPORADORA SPLIT","1370 - UNIDADE CONDENSADORA SPLIT"]}]},
+{"nome":"Termoplástico","faturamento":20070967514.0,"participacao":8.76,"qtd_empresas":146,"empresas":[{"inscricao":"200105558","razao":"RUBBERON INDUSTRIA, COMERCIO, IMPORTACAO E EXPORTACAO S.A","qtd_produtos":10,"produtos":["0395 - ARTIGO DE MATÉRIA PLÁSTICA PARA TRANSPORTE OU EMBALAGEM","0482 - DETERGENTE","0487 - DESINFETANTE","0674 - CHAPA, FOLHA, TIRA, FITA, PELÍCULA DE PLÁSTICO","0750 - TECIDO DE FIBRA SINTÉTICA ARTIFICIAL","1306 - COMPOSTO TERMOPLÁSTICO DE RESINA EXTRUDADO","1389 - TUBETE DE PAPELÃO","1629 - EMULSÃO ASFÁLTICA","2020 - RESÍDUOS PROCESSADOS DE MATERIAIS DIVERSOS","2319 - COMPOSTO DE RESINA DE POLIETILENO OU DE POLIPROPILENO EXTRUDADO"]},{"inscricao":"210109084","razao":"SOCIEDADE MICHELIN DE PARTICIPACOES INDUST E COMERCIO","qtd_produtos":4,"produtos":["0461 - CÂMARA DE AR PARA PNEUMÁTICO DE BICICLETA","0463 - CÂMARA DE AR PARA PNEUMÁTICO DE MOTOCICLETA","0464 - PNEUMÁTICO PARA BICICLETA","0736 - PNEUMÁTICO PARA MOTOCICLETA E MOTONETA"]}]},
+{"nome":"Metalúrgico","faturamento":18598975345.0,"participacao":8.12,"qtd_empresas":62,"empresas":[{"inscricao":"200103261","razao":"AMAZON ACO INDUSTRIA E COMERCIO LTDA","qtd_produtos":10,"produtos":["0417 - LAMINADO DE FERRO AÇO EM FITA, TIRA, CHAPA E BLANKS","0439 - ARAME DE FERRO OU AÇO","0705 - ESTRUTURA DE FERRO AÇO PARA CONSTRUÇÃO CIVIL","1029 - TELA DE FERRO AÇO","1068 - BARRA DE FERRO AÇO PRÓPRIA PARA CONSTRUÇÃO","1513 - PERFIL PARA ESTRUTURA METÁLICA","1514 - TELHA METÁLICA TRAPEZOIDAL","1515 - TELHA METÁLICA ONDULADA","1679 - CALHAS","1746 - ARTEFATOS TUBULARES DE FERRO/AÇO"]},{"inscricao":"200140191","razao":"METALURGICA MARLIN INDUSTRIA E COMERCIO DE FERRO E ACO LTDA","qtd_produtos":10,"produtos":["0417 - LAMINADO DE FERRO AÇO EM FITA, TIRA, CHAPA E BLANKS","0439 - ARAME DE FERRO OU AÇO","0705 - ESTRUTURA DE FERRO AÇO PARA CONSTRUÇÃO CIVIL","0876 - RESERVATÓRIO METÁLICO","0957 - ESQUADRIA DE FERRO AÇO","1068 - BARRA DE FERRO AÇO PRÓPRIA PARA CONSTRUÇÃO","1513 - PERFIL PARA ESTRUTURA METÁLICA","1514 - TELHA METÁLICA TRAPEZOIDAL","1515 - TELHA METÁLICA ONDULADA","1680 - CANTONEIRA DOBRADA"]}]},
+{"nome":"Isqueiros, canetas e barbeadores descartáveis","faturamento":3022895942.0,"participacao":1.32,"qtd_empresas":7,"empresas":[{"inscricao":"200109324","razao":"BIC AMAZÔNIA S.A","qtd_produtos":12,"produtos":["0008 - PEÇAS PLÁSTICAS MOLDADAS POR INJEÇÃO","0246 - LÂMINA DE DUPLO FIO","0248 - APARELHO DE BARBEAR","0251 - CANETA ESFEROGRÁFICA","0253 - CARGA COM PONTA PARA CANETA","0255 - DEMARCADOR (MARCADOR)","0258 - ISQUEIRO DE PLÁSTICO A GÁS NÃO RECARREGÁVEL","0259 - PEDRA PARA ISQUEIRO","0261 - MOLETA PARA ISQUEIRO","0423 - MOLAS DE TORÇÃO DE AÇO","0426 - ACENDEDOR PARA APARELHOS A GÁS","0926 - LÁPIS DE RESINA"]},{"inscricao":"200170309","razao":"PROCTER & GAMBLE DO BRASIL LTDA","qtd_produtos":4,"produtos":["0244 - ESCOVA DENTAL","0246 - LÂMINA DE DUPLO FIO","0247 - CARTUCHO DE LÂMINA PARA APARELHO DE BARBEAR","0248 - APARELHO DE BARBEAR"]}]},
+{"nome":"Bebidas","faturamento":1798912074.0,"participacao":0.79,"qtd_empresas":9,"empresas":[{"inscricao":"200113429","razao":"REAL BEBIDAS DA AMAZÔNIA LTDA","qtd_produtos":4,"produtos":["0270 - REFRIGERANTE (EXCETO DE GUARANÁ)","0271 - REFRIGERANTE GUARANÁ","0431 - ÁGUA MINERAL","2015 - BEBIDA ENERGÉTICA"]},{"inscricao":"220120838","razao":"AMBEV S.A","qtd_produtos":2,"produtos":["0270 - REFRIGERANTE (EXCETO DE GUARANÁ)","0271 - REFRIGERANTE GUARANÁ"]}]},
+{"nome":"Relojoeiro","faturamento":1773885472.0,"participacao":0.77,"qtd_empresas":9,"empresas":[{"inscricao":"210137738","razao":"ELGIN INDUSTRIAL DA AMAZONIA","qtd_produtos":9,"produtos":["0309 - UNIDADE DIGITAL DE PROCESSAMENTO DE PEQUENO PORTE","0312 - IMPRESSORA DE TRANSFERÊNCIA TÉRMICA","0320 - MONITOR DE VÍDEO COM TELA DE CRISTAL LÍQUIDO","0335 - TERMINAL DE CAPTURA DE DADOS","0344 - LEITOR DE CÓDIGOS DE BARRAS","1160 - UNIDADE DIGITAL DE PROCESSAMENTO COM MONITOR DE VÍDEO","1858 - BALANÇA ELETRÔNICA","1859 - IMPRESSORA TÉRMICA","2123 - APARELHO PARA AUTENTICAÇÃO E TRANSMISSÃO DE CUPONS FISCAIS"]},{"inscricao":"200137158","razao":"TECHNOS DA AMAZONIA INDUSTRIA E COMERCIO S.A","qtd_produtos":4,"produtos":["0202 - RELÓGIO DE PULSO","0203 - RELÓGIO DE BOLSO","0643 - CRONÔMETRO","2317 - RELÓGIO DE USO PESSOAL"]}]},
+{"nome":"Papel e papelão","faturamento":1654989026.0,"participacao":0.72,"qtd_empresas":22,"empresas":[{"inscricao":"200145096","razao":"KLABIN S.A","qtd_produtos":3,"produtos":["0739 - CAIXA DE PAPEL OU CARTÃO ONDULADO","1664 - EMBALAGENS E ARTEFATOS DE PAPELÃO ONDULADO","1736 - CHAPA DE PAPELÃO ONDULADO"]}]},
+{"nome":"Produtos Alimentícios","faturamento":1133129547.0,"participacao":0.49,"qtd_empresas":20,"empresas":[{"inscricao":"200105221","razao":"OCRIM S.A","qtd_produtos":3,"produtos":["0017 - FARINHA DE TRIGO","0707 - FARELO DE TRIGO","0758 - PREPARAÇÕES PARA ALIMENTAÇÃO DE ANIMAIS"]}]},
+{"nome":"Diversos","faturamento":1068528817.0,"participacao":0.47,"qtd_empresas":95,"empresas":[{"inscricao":"200107330","razao":"ROYAL MAX DO BRASIL INDÚSTRIA E COMÉRCIO LTDA","qtd_produtos":5,"produtos":["0629 - LIGAS DE ALUMÍNIO","1089 - MATÉRIA PLÁSTICA RECICLADA SOB FORMA TRITURADA","1306 - COMPOSTO TERMOPLÁSTICO DE RESINA EXTRUDADO","2020 - RESÍDUOS PROCESSADOS DE MATERIAIS DIVERSOS","2319 - COMPOSTO DE RESINA DE POLIETILENO OU DE POLIPROPILENO EXTRUDADO"]}]},
+{"nome":"Beneficiamento de borracha","faturamento":855720267.0,"participacao":0.37,"qtd_empresas":1,"empresas":[{"inscricao":"200159550","razao":"CELTA INDUSTRIA E COMERCIO DE FITAS E ABRASIVOS LTDA","qtd_produtos":1,"produtos":["0399 - FITA ADESIVA"]}]},
+{"nome":"Naval","faturamento":760940954.0,"participacao":0.33,"qtd_empresas":8,"empresas":[{"inscricao":"200164570","razao":"BERTOLINI CONSTRUCAO NAVAL DA AMAZONIA LTDA","qtd_produtos":8,"produtos":["0681 - ESTRUTURA FLUTUANTE - BALSA PARA TRANSPORTE","0683 - EMBARCAÇÃO PARA TRANSPORTE DE PESSOAS E MERCADORIAS","0701 - BARCO PARA EMPURRAR OUTRAS EMBARCAÇÕES","0705 - ESTRUTURA DE FERRO AÇO PARA CONSTRUÇÃO CIVIL","0730 - PARTES PARA REBOQUE E SEMI-REBOQUE","1802 - ESTRUTURA FLUTUANTE","1817 - PARTES E PEÇAS METÁLICAS PARA CONSTRUÇÃO NAVAL","1871 - EMBARCAÇÃO DE ALUMÍNIO PARA TRANSPORTE DE PESSOAS"]}]},
+{"nome":"Ótico","faturamento":637008979.0,"participacao":0.28,"qtd_empresas":1,"empresas":[{"inscricao":"200154613","razao":"ESSILOR DA AMAZONIA INDUSTRIA E COMERCIO LTDA","qtd_produtos":3,"produtos":["0167 - LENTE ORGÂNICA","1663 - LENTES COM TRATAMENTO MULTICAMADAS","2088 - LENTES COM TRATAMENTO MULTICAMADAS EM POLICARBONATO"]}]},
+{"nome":"Mineral não metálico","faturamento":511269477.0,"participacao":0.22,"qtd_empresas":12,"empresas":[{"inscricao":"200130277","razao":"EMAM EMULSÕES E TRANSPORTES LTDA","qtd_produtos":3,"produtos":["1629 - EMULSÃO ASFÁLTICA","2200 - CIMENTO ASFÁLTICO DE PETRÓLEO COM POLÍMERO","2242 - MISTURA DE BETUME DE PETRÓLEO ADITIVADO"]}]},
+{"nome":"Brinquedos","faturamento":469029188.0,"participacao":0.2,"qtd_empresas":3,"empresas":[{"inscricao":"200123157","razao":"BANGTOYS DO BRASIL INDUSTRIA DE BRINQUEDOS E COMÉRCIO LTDA","qtd_produtos":5,"produtos":["0222 - BRINQUEDO DE TECIDO COM ENCHIMENTO","0224 - BRINQUEDO MECÂNICO","0225 - BRINQUEDO ELETROMECÂNICO","0226 - BRINQUEDO ELETROELETRÔNICO","0227 - BRINQUEDO INJETADO DE PLÁSTICO"]}]},
+{"nome":"Mobiliário","faturamento":280284704.0,"participacao":0.12,"qtd_empresas":7,"empresas":[{"inscricao":"200160109","razao":"AMAZONAS INDUSTRIA E COMERCIO DE COLCHOES E ESPUMA LTDA","qtd_produtos":5,"produtos":["0747 - TRAVESSEIRO","1354 - COLCHÃO DE ESPUMA","1394 - CAMA ARTICULADA E AMERICANA","1395 - COLCHÃO DE ESPUMA E DE MOLA COMBINADOS","1486 - ARTEFATOS DE ESPUMA"]}]},
+{"nome":"Têxtil","faturamento":271181812.0,"participacao":0.12,"qtd_empresas":1,"empresas":[{"inscricao":"200160710","razao":"EMPRESA INDUSTRIA DE JUTA S/A","qtd_produtos":4,"produtos":["1156 - TECIDO DE FIBRA DE JUTA","1278 - SACO DE FIBRA DE JUTA","1279 - FIO DE FIBRA DE JUTA","1949 - FIBRA CARDADA DE JUTA"]}]},
+{"nome":"Editorial e gráfico","faturamento":123907001.0,"participacao":0.05,"qtd_empresas":16,"empresas":[{"inscricao":"200120476","razao":"LABELPRESS INDUSTRIA E COMERCIO DA AMAZONIA LTDA","qtd_produtos":10,"produtos":["0706 - ETIQUETA DE PAPEL OU CARTÃO","0708 - MANUAL TÉCNICO IMPRESSO","0740 - CAIXA E CARTONAGEM, DOBRÁVEIS, DE PAPEL OU CARTÃO","1153 - PAPEL IMPRESSO PARA EMPACOTAMENTO","1257 - FITA PARA IMPRESSÃO DE POLIESTER","1271 - ETIQUETAS AUTO-ADESIVAS EM POLICARBONATO LAMINADO","1290 - RÓTULO DE PAPEL OU CARTÃO","1848 - FITA DE TECIDO NÃO BORDADO PARA IMPRESSÃO POR TRANSFERÊNCIA TÉRMICA","2167 - FITA DE MATERIAIS PLÁSTICOS PARA IMPRIMIR DADOS DE IDENTIFICAÇÃO","2186 - ETIQUETA DE PLÁSTICO"]}]},
+{"nome":"Madeireiro","faturamento":71194594.0,"participacao":0.03,"qtd_empresas":3,"empresas":[{"inscricao":"200200542","razao":"MIL MADEIRAS PRECIOSAS LTDA","qtd_produtos":2,"produtos":["0403 - MADEIRA SERRADA","0406 - MADEIRA BENEFICIADA"]}]},
+{"nome":"Couros e similares","faturamento":39487238.0,"participacao":0.02,"qtd_empresas":1,"empresas":[{"inscricao":"200139401","razao":"SMX AGROINDUSTRIAL LTDA","qtd_produtos":1,"produtos":["2007 - COUROS E PELES CURTIDOS"]}]},
+{"nome":"Vestuário e calçados","faturamento":38331935.0,"participacao":0.02,"qtd_empresas":3,"empresas":[{"inscricao":"200105531","razao":"DNC INDUSTRIA DE EQUIPAMENTOS DE SEGURANCA LTDA","qtd_produtos":2,"produtos":["0581 - COLETE SALVA-VIDAS","1512 - CONFECÇÕES EM TECIDOS"]},{"inscricao":"200114816","razao":"NASSER INDUSTRIA E COMERCIO DE CONFECCOES LTDA","qtd_produtos":1,"produtos":["1512 - CONFECÇÕES EM TECIDOS"]},{"inscricao":"200150901","razao":"BDS CONFECÇÕES LTDA","qtd_produtos":1,"produtos":["1512 - CONFECÇÕES EM TECIDOS"]}]}
+]};
+
+const PALETA_7 = ['#1F3864','#2C4F8C','#3F6BB3','#6B5E3B','#5A6B4A','#8B5A4D','#4A4E69'];
+const COR_OUTROS = '#AAAAAA';
+const PALETA_FULL = [
+  '#1F3864','#2C4F8C','#3F6BB3','#5687D5',
+  '#6B5E3B','#8A7144','#A88A4F','#C2A35C',
+  '#5A6B4A','#7A8C5E','#94A672','#AFC18A',
+  '#8B5A4D','#A57162','#BC8978','#D2A28E',
+  '#4A4E69','#605F7E','#7A7A95','#9696AF',
+  '#7A4F5C','#94626F','#AC7682','#C28A95',
+];
+
+const fmtBi = v => (v/1e9).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtMi = v => (v/1e6).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+let ativo = null;
+
+document.getElementById('kpi-fat').textContent = fmtBi(DADOS.total_pim.faturamento);
+document.getElementById('kpi-emp').textContent = DADOS.total_pim.qtd_empresas_unicas.toLocaleString('pt-BR');
+document.getElementById('kpi-sub').textContent = DADOS.total_pim.qtd_subsetores;
+
+// ==========================================================
+// AGRUPAR: top 7 individualmente + "Outros" para os demais
+// ==========================================================
+const TOP_N = 7;
+const topSetores    = DADOS.subsetores.slice(0, TOP_N);
+const outrosSetores = DADOS.subsetores.slice(TOP_N);
+const outrosFat     = outrosSetores.reduce((s, x) => s + x.faturamento, 0);
+const outrosPct     = outrosSetores.reduce((s, x) => s + x.participacao, 0);
+const outrosEmp     = outrosSetores.reduce((s, x) => s + x.qtd_empresas, 0);
+
+const chartSetores = [
+  ...topSetores,
+  {
+    nome: 'Outros (' + outrosSetores.length + ' subsetores)',
+    faturamento: outrosFat,
+    participacao: outrosPct,
+    qtd_empresas: outrosEmp,
+    empresas: outrosSetores.flatMap(x => x.empresas),
+    isOutros: true
+  }
+];
+
+const CHART_PALETA = [...PALETA_7, COR_OUTROS];
+
+// ==========================================================
+// PLUGIN: labels sempre visíveis, linhas nunca cruzam o donut
+//
+// Posicionamento INTELIGENTE:
+//   • Cada label começa na posição natural do seu arco (ay)
+//   • Algoritmo "force-separation" afasta labels sobrepostos
+//     mantendo-os o mais próximo possível do setor
+//   • Conector em 3 segmentos: arco → espinha lateral → label
+//     (nunca atravessa o interior do gráfico)
+// ==========================================================
+const labelsPlugin = {
+  id: 'labelsPlugin',
+  afterDraw(chart) {
+    const { ctx, chartArea } = chart;
+    const meta = chart.getDatasetMeta(0);
+    if (!meta?.data?.length) return;
+    ctx.save();
+
+    const arcs   = meta.data;
+    const cx     = (chartArea.left  + chartArea.right)  / 2;
+    const cy     = (chartArea.top   + chartArea.bottom) / 2;
+    const outerR = arcs[0].outerRadius;
+
+    // Espinhas verticais: coladas à borda externa do donut
+    const GAP      = 16;
+    const rSpineX  = cx + outerR + GAP;
+    const lSpineX  = cx - outerR - GAP;
+    const rColX    = chartArea.right + 12;
+    const lColX    = chartArea.left  - 12;
+
+    // Margem vertical (evita corte de texto nas bordas do canvas)
+    const MARGIN   = 28;
+    const yMin     = chartArea.top    + MARGIN;
+    const yMax     = chartArea.bottom - MARGIN;
+
+    // Montar lista com posições naturais
+    const right = [], left = [];
+    chartSetores.forEach((s, i) => {
+      const arc = arcs[i];
+      const mid = (arc.startAngle + arc.endAngle) / 2;
+      const cos = Math.cos(mid), sin = Math.sin(mid);
+      const ay  = Math.max(yMin, Math.min(yMax, cy + sin * outerR));
+      ;(cos >= 0 ? right : left).push({ i, s, cos, sin, ay, lx: 0, ly: 0 });
+    });
+
+    // Ordenar por y natural (topo → base)
+    right.sort((a, b) => a.ay - b.ay);
+    left.sort( (a, b) => a.ay - b.ay);
+
+    // Force-separation: afasta labels sobrepostos mantendo posição natural
+    const MIN_GAP = 46;   // espaço mínimo vertical entre labels (≈ 3 linhas de texto)
+
+    function separate(grupo) {
+      grupo.forEach(d => { d.ly = d.ay; });
+      for (let iter = 0; iter < 40; iter++) {
+        let moved = false;
+        for (let i = 1; i < grupo.length; i++) {
+          const gap = grupo[i].ly - grupo[i-1].ly;
+          if (gap < MIN_GAP) {
+            const push = (MIN_GAP - gap) / 2;
+            grupo[i-1].ly -= push;
+            grupo[i].ly   += push;
+            moved = true;
+          }
+        }
+        // Re-clamp após cada iteração
+        grupo.forEach(d => { d.ly = Math.max(yMin, Math.min(yMax, d.ly)); });
+        if (!moved) break;
+      }
+    }
+
+    separate(right);
+    separate(left);
+
+    // Atribuir colunas
+    right.forEach(d => { d.lx = rColX; });
+    left.forEach( d => { d.lx = lColX; });
+
+    // Renderizar
+    [...right, ...left].forEach(({ i, s, cos, sin, ay, lx, ly }) => {
+      const cor   = CHART_PALETA[i];
+      const isDir = cos >= 0;
+      const spX   = isDir ? rSpineX : lSpineX;
+
+      // Conector 3 segmentos (nunca cruza o donut):
+      // A(borda do arco) → B(espinha, mesma altura) → C(espinha, altura label) → D(label)
+      ctx.beginPath();
+      ctx.moveTo(cx + cos * outerR, ay);  // A
+      ctx.lineTo(spX,               ay);  // → B
+      ctx.lineTo(spX,               ly);  // ↕ C
+      ctx.lineTo(lx,                ly);  // → D
+      ctx.strokeStyle = cor + '85';
+      ctx.lineWidth   = 0.85;
+      ctx.setLineDash([]);
+      ctx.stroke();
+
+      // Ponto final
+      ctx.beginPath();
+      ctx.arc(lx, ly, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = cor;
+      ctx.fill();
+
+      // Texto 3 linhas
+      const tx = isDir ? lx + 7 : lx - 7;
+      ctx.textAlign    = isDir ? 'left' : 'right';
+      ctx.textBaseline = 'middle';
+
+      // Linha 1: nome (negrito, mais legível com truncagem inteligente)
+      const MAX = s.isOutros ? 22 : 18;
+      const nome = s.nome.length > MAX ? s.nome.slice(0, MAX - 1) + '…' : s.nome;
+      ctx.font      = '600 10px "DM Sans",sans-serif';
+      ctx.fillStyle = '#1A1A1A';
+      ctx.fillText(nome, tx, ly - 14);
+
+      // Linha 2: faturamento
+      ctx.font      = '9.5px "DM Sans",sans-serif';
+      ctx.fillStyle = '#5A5A5A';
+      ctx.fillText('R$ ' + fmtMi(s.faturamento) + ' mi', tx, ly);
+
+      // Linha 3: % · empresas (cor do setor)
+      ctx.font      = '700 9.5px "DM Sans",sans-serif';
+      ctx.fillStyle = cor === COR_OUTROS ? '#666' : cor;
+      ctx.fillText(
+        s.participacao.toFixed(1).replace('.', ',') + '% · ' + s.qtd_empresas + ' emp.',
+        tx, ly + 14
+      );
+    });
+
+    ctx.restore();
+  }
+};
+
+// ==========================================================
+// GRÁFICO
+// ==========================================================
+const ctx = document.getElementById('grafico').getContext('2d');
+const chart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: chartSetores.map(s => s.nome),
+    datasets: [{
+      data:            chartSetores.map(s => s.faturamento),
+      backgroundColor: CHART_PALETA,
+      borderColor:     '#FAF8F3',
+      borderWidth:     3,
+      hoverBorderColor:'#1A1A1A',
+      hoverBorderWidth: 3,
+      hoverOffset:     16,
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    cutout: '65%',
+    layout: { padding: { left: 185, right: 185, top: 20, bottom: 20 } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1A1A1A',
+        titleFont: { family:"'DM Sans',sans-serif", size:12, weight:'600' },
+        bodyFont:  { family:"'DM Sans',sans-serif", size:11 },
+        padding: 12, cornerRadius: 0, displayColors: false,
+        callbacks: {
+          title: items => items[0].label,
+          label: item => {
+            const s = chartSetores[item.dataIndex];
+            return [
+              'Faturamento: R$ ' + fmtMi(s.faturamento) + ' mi',
+              'Participação: '   + s.participacao.toFixed(2).replace('.',',') + '%',
+              'Empresas com PPB: ' + s.qtd_empresas,
+            ];
+          }
+        }
+      }
+    },
+    onClick: (_e, els) => { if (els.length) selecionarChart(els[0].index); },
+    onHover: (_e, els) => { _e.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
+  },
+  plugins: [labelsPlugin]
+});
+
+// ==========================================================
+// TABELA: mostra todos os 24 setores originais
+// ==========================================================
+const listEl = document.getElementById('lista');
+DADOS.subsetores.forEach((s, i) => {
+  const li = document.createElement('li');
+  const isOthers = i >= TOP_N;
+  li.className = 'setor-item' + (isOthers ? ' outros-row' : '');
+  const ec = s.qtd_empresas <= 3 ? 'p' : s.qtd_empresas <= 10 ? 'm' : '';
+  const cor = PALETA_FULL[i];
+  li.innerHTML =
+    '<span class="s-dot" style="background:' + cor + '"></span>' +
+    '<span class="s-nome" title="' + s.nome + '">' + s.nome + '</span>' +
+    '<span class="s-fat">' + fmtMi(s.faturamento) + '</span>' +
+    '<span class="s-pct">' + s.participacao.toFixed(2).replace('.',',') + '%</span>' +
+    '<span class="s-emp ' + ec + '">' + s.qtd_empresas + '</span>';
+  li.addEventListener('click', () => selecionarSetor(i));
+  listEl.appendChild(li);
+});
+
+// ==========================================================
+// SELEÇÃO a partir do gráfico (índice 0-7 em chartSetores)
+// ==========================================================
+function selecionarChart(chartIdx) {
+  const cs = chartSetores[chartIdx];
+  // Highlight na fatia
+  chart.setActiveElements([{ datasetIndex:0, index:chartIdx }]);
+  chart.update();
+
+  // Detalhe
+  const nome = cs.isOutros
+    ? 'Outros — ' + outrosSetores.length + ' subsetores'
+    : cs.nome;
+  mostrarDetalhe(nome, cs.faturamento, cs.participacao, cs.qtd_empresas, cs.empresas);
+
+  // Destaque na tabela
+  document.querySelectorAll('.setor-item').forEach((el, i) => {
+    el.classList.toggle('ativo', cs.isOutros ? i >= TOP_N : i === chartIdx);
+  });
+}
+
+// SELEÇÃO a partir da tabela (índice 0-23 em DADOS.subsetores)
+function selecionarSetor(idx) {
+  const s = DADOS.subsetores[idx];
+  // Highlight na fatia do gráfico
+  const chartIdx = idx < TOP_N ? idx : TOP_N;
+  chart.setActiveElements([{ datasetIndex:0, index:chartIdx }]);
+  chart.update();
+
+  mostrarDetalhe(s.nome, s.faturamento, s.participacao, s.qtd_empresas, s.empresas);
+
+  document.querySelectorAll('.setor-item').forEach((el, i) => el.classList.toggle('ativo', i === idx));
+}
+
+function mostrarDetalhe(nome, fat, pct, emp, empresas) {
+  ativo = { empresas };
+  document.getElementById('det-nome').textContent = nome;
+  document.getElementById('det-fat').textContent  = 'R$ ' + fmtMi(fat) + ' mi';
+  document.getElementById('det-pct').textContent  = pct.toFixed(2).replace('.',',') + '%';
+  document.getElementById('det-emp').textContent  = emp;
+  document.getElementById('busca').value = '';
+  renderEmpresas(empresas, '');
+  const det = document.getElementById('detalhe');
+  det.classList.add('vis');
+  setTimeout(() => det.scrollIntoView({ behavior:'smooth', block:'start' }), 120);
+}
+
+// ==========================================================
+// EMPRESAS
+// ==========================================================
+function renderEmpresas(lista, filtro) {
+  const cont = document.getElementById('emp-container');
+  const f = filtro.toLowerCase().trim();
+  const res = f ? lista.filter(e => e.razao.toLowerCase().includes(f) || e.inscricao.includes(f)) : lista;
+  document.getElementById('contador').textContent =
+    res.length === lista.length ? lista.length + ' empresa(s)' : res.length + ' de ' + lista.length;
+  if (!res.length) {
+    cont.innerHTML = '<div style="padding:18px 0;color:#555;font-size:13px;">Nenhuma empresa encontrada.</div>';
+    return;
+  }
+  cont.innerHTML = res.map((e,i) =>
+    '<div class="emp-row">' +
+      '<div class="emp-head">' +
+        '<span class="emp-rank">' + String(i+1).padStart(2,'0') + '</span>' +
+        '<span class="emp-insc">' + e.inscricao + '</span>' +
+        '<span class="emp-nome">' + e.razao + '</span>' +
+        '<span class="emp-qtd">' + e.qtd_produtos + ' prod.</span>' +
+        '<span class="emp-toggle">›</span>' +
+      '</div>' +
+      '<div class="prod-list"><div class="prod-inner">' +
+        e.produtos.map(p => {
+          const m = p.match(/^(\d{4})\s*-\s*(.+)$/);
+          return m
+            ? '<div class="prod-item"><span class="prod-cod">' + m[1] + '</span>' + m[2] + '</div>'
+            : '<div class="prod-item">' + p + '</div>';
+        }).join('') +
+      '</div></div>' +
+    '</div>'
+  ).join('');
+  cont.querySelectorAll('.emp-row').forEach(row => {
+    row.querySelector('.emp-head').addEventListener('click', () => row.classList.toggle('open'));
+  });
+}
+
+document.getElementById('busca').addEventListener('input', e => {
+  if (!ativo) return;
+  renderEmpresas(ativo.empresas, e.target.value);
+});
+</script>
+</body>
+</html>
